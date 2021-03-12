@@ -16,7 +16,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update
 RUN apt-get install -y lsb-release software-properties-common
-RUN add-apt-repository universe
+#RUN add-apt-repository universe
 RUN apt-get update
 #RUN apt-get upgrade -y
 
@@ -57,7 +57,7 @@ ENV HOME /home/dx7
 
 USER root
 RUN apt-get install -y python2-dev
-RUN curl https://bootstrap.pypa.io/2.7/get-pip.py --output get-pip.py
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
 #RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
 RUN python2 get-pip.py && rm get-pip.py
 
