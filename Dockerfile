@@ -116,4 +116,6 @@ RUN apt-get install -y libsndfile-dev vorbis-tools
 ##RUN apt-get remove -y git build-essential cmake gcc
 ##RUN apt-get autoclean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 ##
+COPY only-change-velocity.py /home/dx7/only-change-velocity.py
+RUN chown -R dx7:dx7 /home/dx7/
 USER dx7
