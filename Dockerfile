@@ -30,7 +30,13 @@ RUN apt-get install -y git build-essential python2
 #RUN apt-get install -y vim rsync
 
 RUN apt-get install -y wget
-RUN bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+#RUN bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+# Add LLVM repository and install clang-12
+RUN wget https://apt.llvm.org/llvm.sh && \
+    chmod +x llvm.sh && \
+    ./llvm.sh 12 && \
+    update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 100 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-12
+
 
 #RUN apt-get remove cmake -y
 #RUN apt-get install -y apt-transport-https ca-certificates gnupg software-properties-common wget  libssl1.0-dev 
@@ -79,11 +85,19 @@ RUN apt-get install -y wget
 RUN apt-get install -y unzip
 #RUN pip install --upgrade pip
 RUN apt-get install -y libasound2-dev
-RUN pip install --upgrade tqdm ipython numpy soundfile python-slugify mido python-rtmidi
+#RUN pip install --upgrade tqdm ipython numpy soundfile python-slugify mido python-rtmidi
+#RUN python2 -m pip install --upgrade tqdm ipython numpy soundfile python-slugify mido python-rtmidi
+#RUN python2 -m pip install --upgrade tqdm ipython numpy soundfile python-slugify mido
+RUN python2 -m pip install --upgrade tqdm ipython numpy soundfile mido
+RUN python2 -m pip install python-slugify==1.2.6
+RUN python2 -m pip install --upgrade python-rtmidi==1.4.7
+
+RUN apt-get install -y sudo vim
+
 ## --no-cache-dir 
 ## numpy==1.16
 ##RUN pip install --upgrade tqdm ipython numpy soundfile python-slugify mido python-rtmidi
-#RUN apt-get install -y libsndfile-dev vorbis-tools
+RUN apt-get install -y libsndfile-dev vorbis-tools
 #
 #USER dx7
 #
