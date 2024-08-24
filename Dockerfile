@@ -22,8 +22,8 @@ RUN apt-get update
 
 # Build tools
 #RUN apt-get install -y git build-essential python-pip
-RUN apt-get install -y git build-essential python2
-#RUN apt-get install -y git build-essential python2-pip
+RUN apt-get install -y git build-essential python3
+#RUN apt-get install -y git build-essential python3-pip
 #RUN apt-get install -y git build-essential
 #RUN apt-get install -y clang
 #RUN apt-get install -y clang-9
@@ -50,40 +50,48 @@ RUN bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
 RUN apt-get install -y vim curl
 #RUN apt-get install -y clang
 
+RUN apt-get install -y git build-essential python3-dev python3-distutils python3-pip
+
 # Add non root user
 RUN useradd -ms /bin/bash dx7 && echo "dx7:dx7" | chpasswd && adduser dx7 sudo
 USER dx7
 ENV HOME /home/dx7
 
-USER root
-RUN apt-get install -y python2-dev
-RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
-#RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
-RUN python2 get-pip.py && rm get-pip.py
+#USER root
+#RUN apt-get install -y python3-dev
+#RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
+##RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
+#RUN python3 get-pip.py && rm get-pip.py
 
 
 USER dx7
 # Clone learnfm from master, and build
-RUN cd ~ && git clone https://github.com/turian/learnfm.git
-RUN cd ~/learnfm/ && git checkout unix-fixes
-RUN cd ~/learnfm/dx7core/ && perl -i -pe 's/g\+\+/clang++-12/;' Makefile
-RUN cd ~/learnfm/dx7core/ && perl -i -pe 's/g\+\+/clang++-12/;' setup.py
-RUN cd ~/learnfm/dx7core/ && perl -i -pe 's/gcc/clang-12/;' setup.py
+RUN cd ~ && git clone https://github.com/bwhitman/learnfm.git
+RUN cd ~/learnfm/
+#RUN cd ~/learnfm/ && git checkout unix-fixes
+#RUN cd ~/learnfm/dx7core/ && perl -i -pe 's/g\+\+/clang++-12/;' Makefile
+#RUN cd ~/learnfm/dx7core/ && perl -i -pe 's/g\+\+/clang++-12/;' setup.py
+#RUN cd ~/learnfm/dx7core/ && perl -i -pe 's/gcc/clang-12/;' setup.py
+
+# Apply patch using perl to aligned_buf.h
+RUN sed -i '18 a #include <cstddef>\n#include <cstdint>' ~/learnfm/dx7core/aligned_buf.h
+
 RUN cd ~/learnfm/dx7core/ && make
 RUN cd ~/learnfm/dx7core/ && perl -i -pe 's/\/Users\/bwhitman\/outside/\/home\/dx7/' pydx7.cc
-RUN cd ~/learnfm/dx7core/ && python2 setup.py build
+RUN cd ~/learnfm/dx7core/ && python3 setup.py build
 
 USER root
-RUN cd ~/learnfm/dx7core/ && python2 setup.py install
+RUN cd ~/learnfm/dx7core/ && python3 setup.py install
 RUN apt-get install -y wget
 RUN apt-get install -y unzip
 #RUN pip install --upgrade pip
 RUN apt-get install -y libasound2-dev
-RUN pip install --upgrade tqdm ipython numpy soundfile python-slugify mido python-rtmidi
+RUN pip install --upgrade tqdm ipython numpy soundfile python-slugify mido python-rtmidi==1.4.7
+RUN apt-get install -y sudo 
 ## --no-cache-dir 
 ## numpy==1.16
 ##RUN pip install --upgrade tqdm ipython numpy soundfile python-slugify mido python-rtmidi
-#RUN apt-get install -y libsndfile-dev vorbis-tools
+RUN apt-get install -y libsndfile-dev vorbis-tools
 #
 #USER dx7
 #
