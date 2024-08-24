@@ -18,3 +18,5 @@ Within docker:
 # piano writing ogg files to output/
 ./run.py
 ```
+
+See `bwhitman` branch to use latest version with Python 3 support.
